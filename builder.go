@@ -1,4 +1,4 @@
-package builder
+package dagger_utils
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ type Builder struct {
 	types.Options
 }
 
-func (b Builder) goLint(lintImg string, lintTimeout string) {
+func (b Builder) GoLint(lintImg string, lintTimeout string) error {
 	_, err := b.Options.DaggerClient.Container().
 		From(lintImg).
 		WithMountedDirectory("/src", b.Options.Src).
@@ -18,11 +18,13 @@ func (b Builder) goLint(lintImg string, lintTimeout string) {
 			fmt.Sprintf("--timeout=%s", lintTimeout), "-v"}).
 		ExitCode(b.Options.Ctx)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
 
-func (b Builder) goBuild(buildImg string, binDir string, binName string) {
+func (b Builder) GoBuild(buildImg string, binDir string, binName string) error {
 	builder := b.Options.DaggerClient.
 		Container().
 		From(buildImg).
@@ -33,6 +35,8 @@ func (b Builder) goBuild(buildImg string, binDir string, binName string) {
 
 	_, err := builder.File(binName).Export(b.Options.Ctx, fmt.Sprintf("%s/%s", binDir, binName))
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
