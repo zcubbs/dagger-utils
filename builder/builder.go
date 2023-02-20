@@ -1,8 +1,8 @@
 package builder
 
 import (
-	"dagger-utils/types"
 	"fmt"
+	"github.com/zcubbs/dagger-utils/types"
 )
 
 type Builder struct {
