@@ -13,11 +13,14 @@ type Options struct {
 
 type GoOptions struct {
 	Options
-	BuildImg  string
-	BinDir    string
-	BinName   string
-	BuildArgs []string
-	TestArgs  []string
+	BuildImg    string
+	LintImg     string
+	LintArgs    []string
+	LintTimeout string
+	BinDir      string
+	BinName     string
+	BuildArgs   []string
+	TestArgs    []string
 }
 
 type NpmOptions struct {

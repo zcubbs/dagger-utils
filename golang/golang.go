@@ -9,13 +9,16 @@ type Builder struct {
 	types.Options
 }
 
-func (b Builder) GoLint(lintImg string, lintTimeout string) error {
+func (b Builder) GoLint(options types.GoOptions) error {
+	setupDefaults(&options)
+
+	lintCmd := []string{"golangci-lint"}
+	lintCmd = append(lintCmd, options.LintArgs...)
 	_, err := b.Options.DaggerClient.Container().
-		From(lintImg).
+		From(options.LintImg).
 		WithMountedDirectory("/src", b.Options.Src).
 		WithWorkdir("/src").
-		WithExec([]string{"golangci-lint", "run",
-			fmt.Sprintf("--timeout=%s", lintTimeout), "-v"}).
+		WithExec(lintCmd).
 		ExitCode(b.Options.Ctx)
 	if err != nil {
 		return err
@@ -84,5 +87,21 @@ func setupDefaults(options *types.GoOptions) {
 
 	if options.TestArgs == nil {
 		options.TestArgs = []string{"test", "-v"}
+	}
+
+	if options.LintImg == "" {
+		options.LintImg = "golangci/golangci-lint:v1.42.1"
+	}
+
+	if options.LintTimeout == "" {
+		options.LintTimeout = "5m"
+	}
+
+	if options.LintArgs == nil {
+		options.LintArgs = []string{
+			"run",
+			fmt.Sprintf("--timeout=%s", options.LintTimeout),
+			"-v",
+		}
 	}
 }
