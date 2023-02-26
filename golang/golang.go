@@ -90,7 +90,7 @@ func setupDefaults(options *types.GoOptions) {
 	}
 
 	if options.LintImg == "" {
-		options.LintImg = "golangci/golangci-lint:v1.42.1"
+		options.LintImg = "golangci/golangci-lint:v1.51.2"
 	}
 
 	if options.LintTimeout == "" {
