@@ -10,3 +10,17 @@ type Options struct {
 	Ctx          context.Context
 	DaggerClient *dagger.Client
 }
+
+type GoOptions struct {
+	Options
+	BuildImg  string
+	BinDir    string
+	BinName   string
+	BuildArgs []string
+	TestArgs  []string
+}
+
+type NpmOptions struct {
+	Options
+	BuildImg string
+}
