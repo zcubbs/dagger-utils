@@ -7,15 +7,17 @@ import (
 
 type Builder struct {
 	types.Options
+	types.GoOptions
 }
 
-func (b Builder) GoLint(options types.GoOptions) error {
-	setupDefaults(&options)
+func (b Builder) GoLint() error {
+	types.SetDefaults(&b.Options)
+	setupDefaults(&b.GoOptions)
 
 	lintCmd := []string{"golangci-lint"}
-	lintCmd = append(lintCmd, options.LintArgs...)
+	lintCmd = append(lintCmd, b.LintArgs...)
 	_, err := b.Options.DaggerClient.Container().
-		From(options.LintImg).
+		From(b.LintImg).
 		WithMountedDirectory("/src", b.Options.Src).
 		WithWorkdir("/src").
 		WithExec(lintCmd).
@@ -27,14 +29,15 @@ func (b Builder) GoLint(options types.GoOptions) error {
 	return nil
 }
 
-func (b Builder) GoTest(options types.GoOptions) error {
-	setupDefaults(&options)
+func (b Builder) GoTest() error {
+	types.SetDefaults(&b.Options)
+	setupDefaults(&b.GoOptions)
 
 	testCmd := []string{"go"}
-	testCmd = append(testCmd, options.TestArgs...)
+	testCmd = append(testCmd, b.TestArgs...)
 
 	_, err := b.Options.DaggerClient.Container().
-		From(options.BuildImg).
+		From(b.BuildImg).
 		WithMountedDirectory("/src", b.Options.Src).
 		WithWorkdir("/src").
 		WithExec(testCmd).
@@ -46,21 +49,22 @@ func (b Builder) GoTest(options types.GoOptions) error {
 	return nil
 }
 
-func (b Builder) GoBuild(options types.GoOptions) error {
-	setupDefaults(&options)
+func (b Builder) GoBuild() error {
+	types.SetDefaults(&b.Options)
+	setupDefaults(&b.GoOptions)
 
 	buildCmd := []string{"go"}
-	buildCmd = append(buildCmd, options.BuildArgs...)
+	buildCmd = append(buildCmd, b.BuildArgs...)
 
 	builder := b.Options.DaggerClient.
 		Container().
-		From(options.BuildImg).
+		From(b.BuildImg).
 		WithMountedDirectory("/src", b.Options.Src).
 		WithWorkdir("/src").
 		WithExec(buildCmd)
 
-	_, err := builder.File(options.BinName).
-		Export(b.Options.Ctx, fmt.Sprintf("%s/%s", options.BinDir, options.BinName))
+	_, err := builder.File(b.BinName).
+		Export(b.Options.Ctx, fmt.Sprintf("%s/%s", b.BinDir, b.BinName))
 	if err != nil {
 		return err
 	}
@@ -69,6 +73,8 @@ func (b Builder) GoBuild(options types.GoOptions) error {
 }
 
 func setupDefaults(options *types.GoOptions) {
+	types.SetDefaults(&options.Options)
+
 	if options.BuildImg == "" {
 		options.BuildImg = "golang:1.20"
 	}

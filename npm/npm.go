@@ -73,6 +73,8 @@ func (b Builder) NpmBuildImage(options types.NpmOptions) error {
 }
 
 func setupOptions(options *types.NpmOptions) {
+	types.SetDefaults(&options.Options)
+
 	if options.BuildImg == "" {
 		options.BuildImg = "node:16"
 	}

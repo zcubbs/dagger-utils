@@ -3,6 +3,7 @@ package types
 import (
 	"context"
 	"dagger.io/dagger"
+	"os"
 )
 
 type Options struct {
@@ -26,4 +27,33 @@ type GoOptions struct {
 type NpmOptions struct {
 	Options
 	BuildImg string
+}
+
+type ScanOptions struct {
+	Options
+	GrypeImg string
+	SyftImg  string
+	BinDir   string
+}
+
+func SetDefaults(options *Options) {
+	if options == nil {
+		options = &Options{}
+	}
+
+	if options.Ctx == nil {
+		options.Ctx = context.Background()
+	}
+
+	if options.DaggerClient == nil {
+		client, err := dagger.Connect(options.Ctx, dagger.WithLogOutput(os.Stdout))
+		if err != nil {
+			panic(err)
+		}
+		options.DaggerClient = client
+	}
+
+	if options.Src == nil {
+		options.Src = options.DaggerClient.Host().Directory(".")
+	}
 }
