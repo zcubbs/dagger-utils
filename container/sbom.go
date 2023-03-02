@@ -9,7 +9,7 @@ import (
 // GenerateSBOM generates a software bill of materials for the container image
 func (s *Scanner) GenerateSBOM(targetImage string) (*dagger.FileID, error) {
 	types.SetDefaults(&s.ScanOptions.Options)
-	setupDefaults(&s.ScanOptions)
+	types.SetupScanDefaults(&s.ScanOptions)
 
 	client := s.ScanOptions.DaggerClient
 	ctx := s.ScanOptions.Options.Ctx

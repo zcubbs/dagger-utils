@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	dagger.io/dagger v0.4.5
-	github.com/spdx/tools-golang v0.4.0
+	github.com/google/uuid v1.3.0
 )
 
 require (

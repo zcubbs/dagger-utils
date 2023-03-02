@@ -5,10 +5,15 @@ import (
 	"github.com/zcubbs/dagger-utils/types"
 )
 
+type Scanner struct {
+	types.Options
+	types.ScanOptions
+}
+
 // GenerateVulnReport scans the SBOM for vulnerabilities
 func (s *Scanner) GenerateVulnReport(targetImage string) error {
 	types.SetDefaults(&s.ScanOptions.Options)
-	setupDefaults(&s.ScanOptions)
+	types.SetupScanDefaults(&s.ScanOptions)
 
 	ctx := s.ScanOptions.Options.Ctx
 
