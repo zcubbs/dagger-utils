@@ -40,8 +40,12 @@ func (b *ImageBuilder) PackBuild(imgName, imgTag string) (*string, error) {
 
 	packBuilder = packBuilder.WithMountedDirectory("/mnt", ddir)
 	packBuilder = packBuilder.
-		WithMountedDirectory("/src", b.Options.Src).
+		WithMountedDirectory("/srcTemp", b.Options.Src).
 		WithWorkdir("/src")
+
+	packBuilder = packBuilder.WithExec(
+		[]string{"cp", "-R", "/srcTemp/.", "/src/"},
+	)
 
 	imageName := fmt.Sprintf("%s/%s:%s", b.RegistryInfo.RegistryServer, imgName, imgTag)
 	packBuilder = packBuilder.WithExec(
