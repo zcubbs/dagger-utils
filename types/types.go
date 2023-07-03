@@ -33,8 +33,10 @@ type GoOptions struct {
 
 type MavenOptions struct {
 	Options
-	BuildImg string
-	MvnArgs  []string
+	BuildImg    string
+	MvnArgs     []string
+	CacheKey    string
+	EnableCache bool
 }
 
 type NpmOptions struct {

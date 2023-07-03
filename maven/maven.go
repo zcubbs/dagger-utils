@@ -24,8 +24,12 @@ func (b Builder) MavenBuild() error {
 		Container().
 		From(b.BuildImg).
 		WithMountedDirectory("/src", b.Options.Src).
-		WithWorkdir("/src").
-		WithExec(buildCmd)
+		WithWorkdir("/src")
+
+	if b.MavenOptions.EnableCache {
+		cacheVolume := b.Options.DaggerClient.CacheVolume(b.CacheKey)
+		builder = builder.WithMountedCache(b.CacheKey, cacheVolume)
+	}
 
 	_, err := builder.ExitCode(b.Options.Ctx)
 	if err != nil {
@@ -40,6 +44,10 @@ func setupDefaults(options *types.MavenOptions) {
 
 	if options.BuildImg == "" {
 		options.BuildImg = "maven:3.9.3-eclipse-temurin-17-focal"
+	}
+
+	if options.CacheKey == "" {
+		options.CacheKey = "maven-cache"
 	}
 
 	if options.MvnArgs == nil {
