@@ -24,7 +24,8 @@ func (b Builder) MavenBuild(cache bool) error {
 		Container().
 		From(b.BuildImg).
 		WithMountedDirectory("/src", b.Options.Src).
-		WithWorkdir("/src")
+		WithWorkdir("/src").
+		WithExec(buildCmd)
 
 	if cache {
 		cacheVolume := b.Options.DaggerClient.CacheVolume(b.CacheKey)
