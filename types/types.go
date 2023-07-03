@@ -31,6 +31,12 @@ type GoOptions struct {
 	TestArgs    []string
 }
 
+type MavenOptions struct {
+	Options
+	BuildImg string
+	MvnArgs  []string
+}
+
 type NpmOptions struct {
 	Options
 	BuildImg string
