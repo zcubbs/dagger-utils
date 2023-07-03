@@ -13,7 +13,7 @@ func (b Builder) MavenTest() error {
 	return nil
 }
 
-func (b Builder) MavenBuild() error {
+func (b Builder) MavenBuild(cache bool) error {
 	types.SetDefaults(&b.Options)
 	setupDefaults(&b.MavenOptions)
 
@@ -26,7 +26,7 @@ func (b Builder) MavenBuild() error {
 		WithMountedDirectory("/src", b.Options.Src).
 		WithWorkdir("/src")
 
-	if b.MavenOptions.EnableCache {
+	if cache {
 		cacheVolume := b.Options.DaggerClient.CacheVolume(b.CacheKey)
 		builder = builder.WithMountedCache(b.CacheKey, cacheVolume)
 	}
